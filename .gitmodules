@@ -1,0 +1,3 @@
+[submodule "Ublox_Linux_Library"]
+	path = Ublox_Linux_Library
+	url = https://github.com/balamuruganky/Ublox_Linux_Library

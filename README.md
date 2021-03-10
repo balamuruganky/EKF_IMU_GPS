@@ -29,21 +29,21 @@ If you are having Beaglebone Blue board, then connect Ublox GPS through USB to t
 ## EKF 15 States
 
 ### Inputs
-1) Latitude
-2) Longitude
-3) Altitude
-4) Velocity (North)
-5) Velocity (East)
-6) Velocity (Down)
-7) Accelarometer X
-8) Accelarometer Y
-9) Accelarometer Z
-10) Gyro X
-11) Gyro Y
-12) Gyro Z
-13) Magnetometer X
-14) Magnetometer Y
-15) Magnetometer Z
+1) Latitude, units are rad
+2) Longitude, units are rad
+3) Altitude, units are m
+4) Velocity (North), units are m/s
+5) Velocity (East), units are m/s
+6) Velocity (Down), units are m/s
+7) Accelarometer X, units are m/s/s
+8) Accelarometer Y, units are m/s/s
+9) Accelarometer Z, units are m/s/s
+10) Gyro X, units are rad/s
+11) Gyro Y, units are rad/s
+12) Gyro Z, units are rad/s
+13) Magnetometer X, units need to be consistant across all magnetometer measurements used (eg. mT)
+14) Magnetometer Y, units need to be consistant across all magnetometer measurements used (eg. mT)
+15) Magnetometer Z, units need to be consistant across all magnetometer measurements used (eg. mT)
 
 ### Outputs
 1) double getLatitude_rad()

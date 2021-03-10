@@ -1,4 +1,4 @@
-# extended_kalman_filter (15 states)
+# Extended Kalman Filter (GPS and IMU fusion)
 
 ## Goal
 The goal of this algorithm is to enhance the accuracy of GPS reading based on IMU reading. No RTK supported GPS modules accuacy should be equal to greater than 2.5 meters. Extended Kalman Filter algorithm shall fuse the GPS reading with 9 axis IMU to improve the accuracy of the GPS.

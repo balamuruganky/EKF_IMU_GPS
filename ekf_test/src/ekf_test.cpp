@@ -12,6 +12,7 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <tuple>
 
 using namespace std;
 
@@ -32,12 +33,20 @@ static void __signal_handler(__attribute__ ((unused)) int dummy)
 fstream fout;
 inline void open_file(std::string file_name) {
     fout.open(file_name, ios::out | ios::app);
-    fout << std::fixed <<"time" << "," << "latitude" << "," << "longitude" << "," << "filtered_latitude" << "," << "filtered_longitude" << std::endl;
+    fout << std::fixed <<"time" << "," << "latitude" << "," << "longitude" << "," 
+    								   << "roll" << "," << "pitch" << "," << "yaw" << "," 
+    								   << "filtered_latitude" << "," << "filtered_longitude" << ","
+    								   << "filtered_roll" << "," << "filtered_pitch" << "," << "filtered_yaw" << std::endl;
 }
 
-inline void update_file(long int time, double latitude, double longitude, double filtered_latitude, double filtered_longitude) {
+inline void update_file(long int time, double latitude, double longitude,
+						float roll, float pitch, float yaw, 
+						double filtered_latitude, double filtered_longitude,
+						float filtered_roll, float filtered_pitch, float filtered_yaw) {
 	fout << time << "," << std::setprecision(7) << latitude << "," << std::setprecision(7) << longitude 
-				 << "," << std::setprecision(7) << filtered_latitude << "," << std::setprecision(7) << filtered_longitude << std::endl;
+				 << "," << roll << "," << pitch << "," << yaw
+				 << "," << std::setprecision(7) << filtered_latitude << "," << std::setprecision(7) << filtered_longitude 
+				 << "," << filtered_roll << "," << filtered_pitch << "," << filtered_yaw << std::endl;
 }
 
 inline void close_file() {
@@ -52,7 +61,9 @@ int main(int argc, char *argv[])
 	Stream serialComm("/dev/ttyACM0");
     gps.begin(serialComm);
     // EKF
-    ekfNavINS ekf;	
+    ekfNavINS ekf;
+
+    float ax, ay, az, hx, hy, hz, pitch, roll, yaw;
 
 	// parse arguments
 	opterr = 0;
@@ -89,13 +100,23 @@ int main(int argc, char *argv[])
 
 		// update the filter
 		if (gps.getPVT()) {
+			ax = data.accel[0];
+			ay = -1*data.accel[1];
+			az = data.accel[2];
+			hx = data.mag[0]; 
+			hy = data.mag[1]; 
+			hz = data.mag[2];
+			std::tie(pitch,roll,yaw) = ekf.getPitchRollYaw(ax, ay, az, hx, hy, hz);
 			ekf.ekf_update(time(NULL),gps.getTimeOfWeek(), gps.getNedNorthVel()*1e-3, gps.getNedEastVel()*1e-3, gps.getNedDownVel()*1e-3,
 				gps.getLatitude()*1e-7*DEG_TO_RAD, gps.getLongitude()*1e-7*DEG_TO_RAD, (gps.getAltitude()*1e-3),
 				data.gyro[0]*DEG_TO_RAD, -1*data.gyro[1]*DEG_TO_RAD, data.gyro[2]*DEG_TO_RAD,
-				data.accel[0], -1*data.accel[1], data.accel[2],
-				data.mag[0], data.mag[1], data.mag[2]);
+				ax, ay, az, hx, hy, hz);
 
-			update_file(time(NULL), gps.getLatitude()*1e-7, gps.getLongitude()*1e-7, ekf.getLatitude_rad()*RAD_TO_DEG, ekf.getLongitude_rad()*RAD_TO_DEG);
+			update_file(time(NULL), 
+						gps.getLatitude()*1e-7, gps.getLongitude()*1e-7,
+						roll, pitch, yaw,
+						ekf.getLatitude_rad()*RAD_TO_DEG, ekf.getLongitude_rad()*RAD_TO_DEG,
+						ekf.getRoll_rad(), ekf.getPitch_rad(), ekf.getHeading_rad());
 
 			printf("------------------------- %ld -------------------------- \n", gps.getTimeOfWeek());
 			printf("Latitude  : %2.7f %2.7f\n", gps.getLatitude()*1e-7, ekf.getLatitude_rad()*RAD_TO_DEG);
@@ -104,12 +125,15 @@ int main(int argc, char *argv[])
 			printf("Speed (N) : %2.3f %2.3f\n", gps.getNedNorthVel()*1e-3, ekf.getVelNorth_ms());
 			printf("Speed (E) : %2.3f %2.3f\n", gps.getNedEastVel()*1e-3, ekf.getVelEast_ms());
 			printf("Speed (D) : %2.3f %2.3f\n", gps.getNedDownVel()*1e-3, ekf.getVelDown_ms());
-			printf("Gyro X    : %f  %f\n", data.gyro[0]*DEG_TO_RAD, ekf.getGyroBiasX_rads());
+			printf("Roll 	  : %2.3f %2.3f\n", roll, ekf.getRoll_rad());
+			printf("Pitch     : %2.3f %2.3f\n", pitch, ekf.getPitch_rad());
+			printf("Yaw       : %2.3f %2.3f\n", yaw, ekf.getHeading_rad());
+			/*printf("Gyro X    : %f  %f\n", data.gyro[0]*DEG_TO_RAD, ekf.getGyroBiasX_rads());
 			printf("Gyro Y    : %f  %f\n", data.gyro[1]*DEG_TO_RAD, ekf.getGyroBiasY_rads());
 			printf("Gyro Z    : %f  %f\n", data.gyro[2]*DEG_TO_RAD, ekf.getGyroBiasZ_rads());
 			printf("Accel X   : %f  %f\n", data.accel[0], ekf.getAccelBiasX_mss());
 			printf("Accel Y   : %f  %f\n", data.accel[1], ekf.getAccelBiasY_mss());
-			printf("Accel Z   : %f  %f\n", data.accel[2], ekf.getAccelBiasZ_mss());
+			printf("Accel Z   : %f  %f\n", data.accel[2], ekf.getAccelBiasZ_mss());*/
 			printf("-----------------------------------------------------------------\n");
 		}
 		rc_usleep(100000);

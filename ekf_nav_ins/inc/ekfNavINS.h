@@ -77,7 +77,8 @@ class ekfNavINS {
     // returns the roll angle, rad
     float getRoll_rad()         { return phi; }
     // returns the heading angle, rad
-    float getHeading_rad()      { return constrainAngle180(psi); }
+    float getHeadingConstrainAngle180_rad()      { return constrainAngle180(psi); }
+    float getHeading_rad()      { return psi; }
     // returns the INS latitude, rad
     double getLatitude_rad()    { return lat_ins; }
     // returns the INS longitude, rad
@@ -104,6 +105,8 @@ class ekfNavINS {
     float getAccelBiasY_mss()   { return aby; }
     // returns the accel bias estimate in the z direction, m/s/s
     float getAccelBiasZ_mss()   { return abz; }
+    // return pitch, roll and yaw
+    std::tuple<float,float,float> getPitchRollYaw(float ax, float ay, float az, float hx, float hy, float hz);
 
   private:
     //////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -29,14 +29,7 @@ void ekfNavINS::ekf_init(uint64_t time, double vn,double ve,double vd,double lat
   gbx = p;
   gby = q;
   gbz = r;
-  // initial attitude and heading
-  theta = asinf(ax/G);
-  phi = -asinf(ay/(G*cosf(theta)));
-  // magnetic heading correction due to roll and pitch angle
-  Bxc = hx*cosf(theta) + (hy*sinf(phi) + hz*cosf(phi))*sinf(theta);
-  Byc = hy*cosf(phi) - hz*sinf(phi);
-  // finding initial heading
-  psi = -atan2f(Byc,Bxc);
+  std::tie(theta,phi,psi) = getPitchRollYaw(ax, ay, az, hx, hy, hz);
   // euler to quaternion
   quat = toQuaternion(phi, theta, psi);
   // Assemble the matrices
@@ -154,6 +147,18 @@ void ekfNavINS::ekf_update( uint64_t time, unsigned long TOW, double vn,double v
     // Get the new Specific forces and Rotation Rate
     updateBias(ax, ay, az, p, q, r);
   }
+}
+
+std::tuple<float,float,float> ekfNavINS::getPitchRollYaw(float ax, float ay, float az, float hx, float hy, float hz) {
+  // initial attitude and heading
+  theta = asinf(ax/G);
+  phi = -asinf(ay/(G*cosf(theta)));
+  // magnetic heading correction due to roll and pitch angle
+  Bxc = hx*cosf(theta) + (hy*sinf(phi) + hz*cosf(phi))*sinf(theta);
+  Byc = hy*cosf(phi) - hz*sinf(phi);
+  // finding initial heading
+  psi = -atan2f(Byc,Bxc);
+  return (std::make_tuple(theta,phi,psi));
 }
 
 void ekfNavINS::updateCalculatedVsPredicted() {

@@ -55,7 +55,7 @@ If you are having Beaglebone Blue board, then connect Ublox GPS through USB to t
 7) float  getRoll_rad()
 8) float  getPitch_rad()
 9) float  getHeading_rad()
-10)float  getGroundTrack_rad()
+10) float  getGroundTrack_rad()
 
 ### Bias Outputs
 1) float getGyroBiasX_rads()

@@ -2,7 +2,7 @@ project (ekf_test)
 cmake_minimum_required(VERSION 2.8)
 
 add_definitions(
-    -std=c++11 -O3 -Wno-deprecated -v -ftime-report
+    -std=c++17 -O3 -Wno-deprecated -v -ftime-report
     )
 
 set(

@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 			hy = data.mag[1]; 
 			hz = data.mag[2];
 			std::tie(pitch,roll,yaw) = ekf.getPitchRollYaw(ax, ay, az, hx, hy, hz);
-			ekf.ekf_update(time(NULL),gps.getTimeOfWeek(), gps.getNedNorthVel()*1e-3, gps.getNedEastVel()*1e-3, gps.getNedDownVel()*1e-3,
+			ekf.ekf_update(time(NULL) /*,gps.getTimeOfWeek()*/, gps.getNedNorthVel()*1e-3, gps.getNedEastVel()*1e-3, gps.getNedDownVel()*1e-3,
 				gps.getLatitude()*1e-7*DEG_TO_RAD, gps.getLongitude()*1e-7*DEG_TO_RAD, (gps.getAltitude()*1e-3),
 				data.gyro[0]*DEG_TO_RAD, -1*data.gyro[1]*DEG_TO_RAD, data.gyro[2]*DEG_TO_RAD,
 				ax, ay, az, hx, hy, hz);

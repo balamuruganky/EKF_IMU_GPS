@@ -28,8 +28,7 @@ If you are having Beaglebone Blue board, then connect Ublox GPS through USB to t
 
 ## EKF 15 States
 
-### Inputs
-## Make sure IMU fixed in NED frame
+### Inputs (Make sure IMU fixed in NED frame)
 1) Latitude, units are rad
 2) Longitude, units are rad
 3) Altitude, units are m

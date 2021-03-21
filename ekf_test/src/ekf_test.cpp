@@ -6,7 +6,7 @@
 #include <rc/time.h>
 
 #include "ekfNavINS.h"
-#include "SparkFun_Ublox_Arduino_Library.h"
+#include "SparkFun_u-blox_GNSS_Arduino_Library.h"
 
 #include <iostream>
 #include <fstream>
@@ -20,7 +20,7 @@ using namespace std;
 
 static int running = 0;
 
-SFE_UBLOX_GPS gps;
+SFE_UBLOX_GNSS gps;
 
 // interrupt handler to catch ctrl-c
 static void __signal_handler(__attribute__ ((unused)) int dummy)

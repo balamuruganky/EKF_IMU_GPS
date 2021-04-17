@@ -38,6 +38,6 @@ include_directories(
     ${CMAKE_HOME_DIRECTORY}/Ublox_Linux_Library/SparkFun_u-blox_GNSS_Arduino_Library/src
     )
 
-add_subdirectory(Ublox_Linux_Library)
+add_subdirectory(Ublox_Linux_Library/linux_build)
 add_subdirectory(ekf_nav_ins)
 add_subdirectory(ekf_test)

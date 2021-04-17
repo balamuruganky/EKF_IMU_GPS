@@ -11,8 +11,8 @@ The goal of this algorithm is to enhance the accuracy of GPS reading based on IM
 
 ## How to
 ### Compile
-* git clone https://github.com/balamuruganky/extended_kalman_filter
-* cd extended_kalman_filter
+* git clone https://github.com/balamuruganky/EKF_IMU_GPS
+* cd EKF_IMU_GPS
 * git submodule update --init --recursive
 * mkdir build
 * cd build
